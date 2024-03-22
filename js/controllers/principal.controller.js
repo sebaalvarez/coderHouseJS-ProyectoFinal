@@ -43,21 +43,8 @@ class Controller {
     );
   }
 
-  //
-  getArryDisponibilidad() {
-    return this.arryDisponibilidad;
-  }
-
-  getArryTipoDeAtencion() {
-    return this.arryTipoAtencion;
-  }
-
-  getArryTurnos() {
-    return this.arryTurnos;
-  }
-
   // Valida disponibilidad para Día seleccionado y Tipo de Atención en caso de existir disponibilidad registra el turno
-  armaListadoTurno(nombre, dia, tipoAtencion) {
+  validarGrabarTurno(nombre, dia, tipoAtencion) {
     // Obtengo el objeto con la información del día seleccionado
     let objDisp = this.getArryDisponibilidad().find(
       (e) => e.getNumDia() == dia - 1
@@ -88,5 +75,17 @@ class Controller {
       );
       return 1;
     }
+  }
+
+  getArryDisponibilidad() {
+    return this.arryDisponibilidad;
+  }
+
+  getArryTipoDeAtencion() {
+    return this.arryTipoAtencion;
+  }
+
+  getArryTurnos() {
+    return this.arryTurnos;
   }
 }

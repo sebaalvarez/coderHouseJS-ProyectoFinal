@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../css/style.css">
+  <title>Salud</title>
+</head>
+
+<body>
+  <header>
+    <h1>Mini Sistema de Turnos</h1>
+  </header>
+
+  <main>
+
+    <form id="formLogin" class="formLogin">
+      <h2>👤 Login 👤</h2>
+      <div>
+        <label for="lblUsuario">🙍🏼‍♂️ Usuario</label>
+        <input type="text" id="lblUsuario" required="true"></input>
+      </div>
+      <div>
+        <label for="lblPass">🚥 Contraseña</label>
+        <input type="password" id="lblPass" required="true"></input>
+      </div>
+      <input type="submit" class="btnForm" value="Ingresar"></input>
+    </form>
+
+
+
+    <a class="linkHome" href="../index.html">Volver a página principal</a>
+
+    <p id="mensaje"></p>
+
+  </main>
+
+
+  <script src="../js/db/mockup.js"> </script>
+  <script src="../js/controllers/login.controller.js"> </script>
+  <script src="../js/login.js"> </script>
+</body>
+
+</html>

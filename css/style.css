@@ -4,7 +4,213 @@
   box-sizing: border-box;
 }
 
+:root {
+  --color-btn: rgb(39, 72, 172);
+}
+
+header {
+  background-color: var(--color-btn);
+  margin-bottom: 20px;
+  & h1 {
+    text-align: center;
+    color: white;
+    padding-block: 20px;
+    font-size: 40px;
+  }
+}
+
+footer {
+  background-color: var(--color-btn);
+}
+
 body {
+  background-color: #fdfbfb;
+}
+
+.bodyHome {
   background-image: url(../img/hero-salud.png);
   background-size: cover;
+}
+
+.tituloHome {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: rgb(255, 253, 253);
+  padding-block: 20px;
+  font-size: 40px;
+}
+
+.linkSistema {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgb(220, 23, 23);
+  color: aliceblue;
+  padding: 10px;
+  border-radius: 20px;
+  text-decoration: none;
+}
+
+.linkSistema:hover {
+  background-color: white;
+  color: rgb(248, 5, 5);
+}
+/*   Pagina de login     */
+.formLogin {
+  background-color: beige;
+  max-width: 350px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  /* border: 1px solid rgb(125, 125, 125); */
+  border-radius: 20px;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  & div {
+    padding: 5px;
+  }
+  & label {
+    padding-right: 20px;
+  }
+  & input {
+    width: 100px;
+  }
+  & button {
+    padding: 5px;
+    margin: 10px;
+  }
+  & h2 {
+    padding-block: 20px;
+  }
+}
+
+.linkHome {
+  display: flex;
+  justify-content: center;
+}
+
+#mensaje {
+  display: none;
+  flex-wrap: wrap;
+  justify-content: right;
+  align-items: center;
+  max-width: 25%;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgb(234, 244, 244);
+  border: 1px solid black;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+/*  Paginas del sistema      */
+#userLog {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  padding-right: 20px;
+}
+
+h1 {
+  text-align: center;
+  color: rgb(45, 220, 220);
+  padding-block: 20px;
+  font-size: 40px;
+}
+
+.menu {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.btnMenu {
+  background-color: var(--color-btn);
+  color: white;
+  margin: 10px;
+  padding: 10px;
+  width: 150px;
+  height: 80px;
+  border-radius: 20px;
+  cursor: pointer;
+  border: none;
+}
+
+.btnMenu:hover {
+  background-color: white;
+  color: var(--color-btn);
+  border: 1px solid var(--color-btn);
+}
+
+.formConfig,
+.formTurno {
+  background-color: beige;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+
+  border-radius: 20px;
+  & div {
+    padding: 5px;
+  }
+  & label {
+    padding-right: 20px;
+  }
+  & input {
+    width: 50px;
+  }
+  & button {
+    padding: 5px;
+    margin: 10px;
+  }
+  & h2 {
+    padding-block: 20px;
+  }
+}
+
+.btnForm {
+  padding: 10px 5px 10px 5px;
+  margin: 10px;
+  width: 90px !important;
+  border-radius: 10px;
+  border: 1px solid rgb(159, 158, 158);
+  color: white;
+  background-color: var(--color-btn);
+}
+
+.formTurno {
+  & label {
+    padding-right: 0px;
+    padding-left: 30px;
+  }
+  & input {
+    width: 230px;
+  }
+}
+
+#disponibilidad,
+#turnos {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  background-color: beige;
+  max-width: 500px;
+  list-style: none;
+  border-radius: 20px;
 }

@@ -50,3 +50,18 @@
 - Validar que solamente se permitan seleccionar los números de las opciones del menú
 - Validar que al ingresar un día solo se permita ingresar los valores definidos
 - Validar que al ingresar un tipo de atención solo se permita ingresar los valores definidos
+
+---
+
+---
+
+# Estructura
+
+La programación está estructurada en diferentes carpetas para separar la partee visual y la codificación en diferentes capas:
+
+- capa de interconectividad con la parte visual
+- controladores: donde se maneja toda la lógica del negocio y hace de intermediario entre lo visual y los objetos y datos
+- modelos: agrupa todos los objetos
+- datos: simula la persistencia
+
+Los formularios que se muestran para la inserción de datos se arman de forma dinámica de acuerdo a los datos que se encuentran en el archivo mockup.js al igual que los usuarios para loguearse en el sistema

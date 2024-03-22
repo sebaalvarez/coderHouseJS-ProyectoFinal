@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../css/style.css">
+  <title>Salud</title>
+</head>
+
+<body>
+  <header>
+    <h1>Mini Sistema de Turnos</h1>
+  </header>
+  <h3 id="userLog"></h3>
+  <main>
+
+    <section class="menu" id="menu">
+      <button class="btnMenu" id="btnConf">⚙️ Configuración</button>
+      <button class="btnMenu" id="btnAddTurno">📝 Cargar Turnos</button>
+      <button class="btnMenu" id="btnCnsDispo">⏱️ Disponibilidad</button>
+      <button class="btnMenu" id="btnCnsTurn">📊 Turnos Asignados</button>
+      <button class="btnMenu" id="btnSalir">🛫 Salir</button>
+    </section>
+
+    <p id="mensaje"></p>
+
+    <form id="formConfig" class="formConfig"></form>
+
+    <form id="formTurno" class="formTurno"></form>
+
+    <ol id="disponibilidad"></ol>
+
+    <ol id="turnos"></ol>
+
+  </main>
+
+
+  <script src="../js/db/mockup.js"> </script>
+  <script src="../js/model/turno.js"> </script>
+  <script src="../js/model/tipoAtencion.js"> </script>
+  <script src="../js/model/disponibilidad.js"> </script>
+  <script src="../js/controllers/principal.controller.js"> </script>
+  <script src="../js/principal.js"> </script>
+</body>
+
+</html>
