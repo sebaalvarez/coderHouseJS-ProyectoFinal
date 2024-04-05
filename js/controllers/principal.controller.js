@@ -89,4 +89,21 @@ class Controller {
   getArryTurnos() {
     return this.arryTurnos;
   }
+
+  // para el caso que se trabaje en el entorno de desarrollo se presetean los parametros iniciales con los valores definidos en env.js
+  verificaEntorno() {
+    if (ENTORNO == "develop") {
+      this.devuelveDiasDeAtencion().forEach((el, index) =>
+        this.cargaDisponibilidad(index, HORADISPONIBLE)
+      );
+
+      this.devuelveTiposDeAtencion().forEach((el, i) =>
+        this.cargaTipoDeAtencion(i, DIF_MIN_ATENCION * (i + 1))
+      );
+
+      return 1;
+    } else {
+      return 0;
+    }
+  }
 }

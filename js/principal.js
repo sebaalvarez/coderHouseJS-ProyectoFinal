@@ -22,7 +22,10 @@ document.getElementById(
   "userLog"
 ).innerText = `Bienvenido ${localStorage.getItem("AppTurno-User")}`;
 
-// ~~~~~~~~  EVENTO DE BOTONES DEL MENU ~~~~~~~~  //
+// dependiendo en el entorno que nos encontremos presetea los los parámetros iniciales o no
+conf = controller.verificaEntorno();
+
+// ~~~~~~~~  EVENTO DE BOTONES  ~~~~~~~~  //
 $btnConf.addEventListener("click", (e) => {
   limpiarBody();
   setConfig();
@@ -51,7 +54,27 @@ $btnSalir.addEventListener("click", (e) => {
     location.href = "./login.html";
   }
 });
-// ~~~~~~~~  FIN EVENTO DE BOTONES DEL MENU ~~~~~~~~  //
+
+// acción del botón grabar del formulario de turnos
+$formTurno.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  if (
+    controller.validarGrabarTurno(
+      $formTurno.querySelector("input#lblPaciente").value,
+      $formTurno.querySelector("select#selDia").selectedIndex + 1,
+      $formTurno.querySelector("select#selAtencion").selectedIndex + 1
+    ) == 0
+  ) {
+    mostrarMensaje(
+      `❌ No hay disponibilidad para el día / atención seleccionado, modifique el día o tipo de atención`
+    );
+  } else {
+    $formTurno.querySelector("input#lblPaciente").value = "";
+    mostrarMensaje(`✅ Se grabó correctamente el turno`);
+  }
+});
+// ~~~~~~~~  FIN EVENTO DE BOTONES  ~~~~~~~~  //
 
 // ~~~~~~~~  FUNCIONES COMPLEMENTARIAS ~~~~~~~~  //
 function limpiarBody() {
@@ -82,6 +105,7 @@ function borradoRecursivo(nodo) {
   }
   nodo.parentNode.removeChild(nodo);
 }
+
 // ~~~~~~~~  FIN FUNCIONES COMPLEMENTARIAS ~~~~~~~~  //
 
 // ~~~~~~~~  FUNCIONES LLAMADAS DESDE LOS BOTONES ~~~~~~~~  //
@@ -223,27 +247,6 @@ function cargaTurno() {
       `;
 
   $formTurno.innerHTML = texto;
-
-  // acción del botón grabar
-  $formTurno.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    if (
-      controller.validarGrabarTurno(
-        $formTurno.querySelector("input#lblPaciente").value,
-        $formTurno.querySelector("select#selDia").selectedIndex + 1,
-        $formTurno.querySelector("select#selAtencion").selectedIndex + 1
-      ) == 0
-    ) {
-      mostrarMensaje(
-        `❌ No hay disponibilidad para el día / atención seleccionado, modifique el día o tipo de atención`
-      );
-    } else {
-      $formTurno.querySelector("#lblPaciente").value = "";
-      mostrarMensaje(`✅ Se grabó correctamente el turno`);
-      borraNodosHijos($formTurno);
-    }
-  });
 }
 
 // devuelve las horas disponible para atención en cada día

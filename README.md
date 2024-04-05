@@ -10,8 +10,8 @@
 
   1. Seteo de configuración inicial: se define la cantidad de horas de atención por día y la duración de cada tipo de atención
 
-     - Ingresar la cantidad de horas de atención para cada día de la semana (los días disponibles los toma del archivo mockup.js en la ruta js>>db)
-     - Ingresar la duración en minutos de cada tipo de atención (los tipos de atención los toma del archivo mockup.js en la ruta js>>db)
+     - Ingresar la cantidad de horas de atención para cada día de la semana (los días disponibles los toma del archivo mockup.js en la ruta js>>db) solo se permiten ingresar números de 0 a 23
+     - Ingresar la duración en minutos de cada tipo de atención (los tipos de atención los toma del archivo mockup.js en la ruta js>>db) solo se permiten ingresar números de 1 a 1380 (que se corresponde a 23 horas)
 
   2. Carga de turnos: se debe ingresar la siguiente información (esta funcionalidad se habilita una vez seteada la configuración inicial)
 
