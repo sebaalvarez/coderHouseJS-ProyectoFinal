@@ -4,7 +4,8 @@ let conf = 0,
 const $formConf = document.getElementById("formConfig"),
   $formTurno = document.getElementById("formTurno"),
   $disponibilidad = document.getElementById("disponibilidad"),
-  $turnos = document.getElementById("turnos"),
+  // $turnos = document.getElementById("turnos"),
+  $turnosTbl = document.getElementById("tblTurnos"),
   $btnConf = document.getElementById("btnConf"),
   $btnAddTurno = document.getElementById("btnAddTurno"),
   $btnCnsDispo = document.getElementById("btnCnsDispo"),
@@ -57,7 +58,7 @@ function limpiarBody() {
   borraNodosHijos($formConf);
   borraNodosHijos($formTurno);
   borraNodosHijos($disponibilidad);
-  borraNodosHijos($turnos);
+  borraNodosHijos($turnosTbl);
 }
 
 function mostrarMensaje(text) {
@@ -81,7 +82,7 @@ function borradoRecursivo(nodo) {
   }
   nodo.parentNode.removeChild(nodo);
 }
-// ~~~~~~~~  FUNCIONES COMPLEMENTARIAS ~~~~~~~~  //
+// ~~~~~~~~  FIN FUNCIONES COMPLEMENTARIAS ~~~~~~~~  //
 
 // ~~~~~~~~  FUNCIONES LLAMADAS DESDE LOS BOTONES ~~~~~~~~  //
 // Configuración de parámetros iniciales
@@ -155,11 +156,13 @@ function setConfig() {
 
     $formConf.querySelectorAll("input").forEach((el, index) => {
       if (index < arryDiasDeAtencion.length) {
+        // obtengo la posicion y valor de los input de días de atencion y los guardo
         controller.cargaDisponibilidad(index, el.value);
       } else if (
         index - arryDiasDeAtencion.length <
         arryTiposDeAtencion.length
       ) {
+        // obtengo la posicion y valor de los input de tipos de atencion y los guardo
         controller.cargaTipoDeAtencion(
           index - arryDiasDeAtencion.length,
           el.value
@@ -179,6 +182,7 @@ function setConfig() {
 // Solicita el ingreso de los datos del turno y valida disponibilidad
 function cargaTurno() {
   if (conf == 0) {
+    // si no fueron definidos los parametros iniciales no permito la carga de turnos
     mostrarMensaje(`🚨 Se debe definir los parámetros en configuración`);
     return;
   }
@@ -197,6 +201,7 @@ function cargaTurno() {
   let arryDiasDeAtencion = controller.devuelveDiasDeAtencion();
 
   for (let i = 0; i < arryDiasDeAtencion.length; i++) {
+    // cargo el combo con los dias de atencion
     texto += `<option>${arryDiasDeAtencion[i]}</option>`;
   }
 
@@ -207,6 +212,7 @@ function cargaTurno() {
   let arryTiposDeAtencion = controller.devuelveTiposDeAtencion();
 
   for (let i = 0; i < arryTiposDeAtencion.length; i++) {
+    // cargo el combo de los tipos de atencion
     texto += `<option>${arryTiposDeAtencion[i]}</option>`;
   }
 
@@ -255,29 +261,54 @@ function getDisponibilidad() {
 
 // devuelve los turnos cargados por día
 function getTurnos() {
-  let li_dia;
+  // let li_dia;
   let cantTurnos = 0;
 
+  // // recorro el array con los días
+  // controller.getArryDisponibilidad().forEach((disp) => {
+  //   li_dia = document.createElement("li");
+  //   li_dia.innerText = `🗓️ Turnos ${disp.getNomDia()}: (Hs Atención ${disp.getHsAtencion()}) - (Hs Disponible ${disp.getHsDisponible()})`;
+  //   $turnos.append(li_dia);
+
+  //   // recorro el array de turnos filtrando por el día en el que me encuentro para obtener los turnos dados es ese día
+  //   controller
+  //     .getArryTurnos()
+  //     .filter((turn) => turn.getNumDia() == disp.getNumDia())
+  //     .forEach((e) => {
+  //       let li_paciente = document.createElement("li");
+  //       li_paciente.innerText = `___🙍🏼‍♂️ Nombre: ${e.getPaciente()} - 🚑 Atención: ${e.getNomAtencion()} (${e.getDuracionMin()} min.)`;
+  //       li_dia.append(li_paciente);
+  //       cantTurnos++;
+  //     });
+  // });
+
   // recorro el array con los días
+  let tbl = `<table>`;
   controller.getArryDisponibilidad().forEach((disp) => {
-    li_dia = document.createElement("li");
-    li_dia.innerText = `🗓️ Turnos ${disp.getNomDia()}: (Hs Atención ${disp.getHsAtencion()}) - (Hs Disponible ${disp.getHsDisponible()})`;
-    $turnos.append(li_dia);
+    tbl += `<tr class="row-dia">
+        <td colspan="3" > 🗓️ Turnos ${disp.getNomDia()} - (Hs Atención ${disp.getHsAtencion()}) - (Hs Disponible ${disp.getHsDisponible()}) </td> 
+      </tr>`;
 
     // recorro el array de turnos filtrando por el día en el que me encuentro para obtener los turnos dados es ese día
     controller
       .getArryTurnos()
       .filter((turn) => turn.getNumDia() == disp.getNumDia())
       .forEach((e) => {
-        let li_paciente = document.createElement("li");
-        li_paciente.innerText = `___🙍🏼‍♂️ Nombre: ${e.getPaciente()} - 🚑 Atención: ${e.getNomAtencion()} (${e.getDuracionMin()} min.)`;
-        li_dia.append(li_paciente);
+        tbl += `<tr class="row-paciente">
+            <td></td>
+            <td> 🙍🏼‍♂️ Nombre: ${e.getPaciente()} </td>
+            <td> 🚑 Atención: ${e.getNomAtencion()} (${e.getDuracionMin()} min.) </td>
+            </tr>`;
+
         cantTurnos++;
       });
+    tbl += `</table>`;
+
+    $turnosTbl.innerHTML = tbl;
   });
 
   if (cantTurnos == 0) {
     mostrarMensaje(`🚨 No hay turnos asignados`);
   }
 }
-// ~~~~~~~~  FUNCIONES LLAMADAS DESDE LOS BOTONES ~~~~~~~~  //
+// ~~~~~~~~  FIN FUNCIONES LLAMADAS DESDE LOS BOTONES ~~~~~~~~  //

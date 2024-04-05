@@ -7,12 +7,12 @@ class Controller {
     this.mockup = new Mockup();
   }
 
-  // Lista de días que se pueden configurar
+  // Obtiene y devuelve los días que se pueden configurar
   devuelveDiasDeAtencion() {
     return this.mockup.getDias();
   }
 
-  // Lista de Tipos de Atención que se pueden configurar
+  // obtiene y devuelve los Tipos de Atención que se pueden configurar
   devuelveTiposDeAtencion() {
     return this.mockup.getTiposDeAtencion();
   }
@@ -43,7 +43,8 @@ class Controller {
     );
   }
 
-  // Valida disponibilidad para Día seleccionado y Tipo de Atención en caso de existir disponibilidad registra el turno
+  // Valida disponibilidad para el Día seleccionado y Tipo de Atención
+  // en caso de existir disponibilidad registra el turno y devuelve 1, sino devuelve 0
   validarGrabarTurno(nombre, dia, tipoAtencion) {
     // Obtengo el objeto con la información del día seleccionado
     let objDisp = this.getArryDisponibilidad().find(
@@ -57,14 +58,14 @@ class Controller {
 
     // Verifico la disponibilidad de acuerdo al día seleccionado y el tipo de atención
     if (objDisp.getMinDisponible() - objAt.getDuracionMin() < 0) {
-      // no hay disponibilidad
+      // Si no hay disponibilidad en minutos retorno 0
       return 0;
     } else {
-      // hay disponibilidad, actualizo disponmibilidad
+      // si hay disponibilidad, actualizo los minutos disponibles
       let valor = objDisp.getMinDisponible() - objAt.getDuracionMin();
       objDisp.setMinDisponible(valor);
 
-      //  llama a la funcion para la carga en la lista el objeto turno
+      // llamo a la funcion para la carga en la lista de turnos el objeto del turno y retorno 1
       this.cargaTurno(
         nombre,
         objDisp.getNumDia(),
