@@ -4,7 +4,6 @@ let conf = 0,
 const $formConf = document.getElementById("formConfig"),
   $formTurno = document.getElementById("formTurno"),
   $disponibilidad = document.getElementById("disponibilidad"),
-  // $turnos = document.getElementById("turnos"),
   $turnosTbl = document.getElementById("tblTurnos"),
   $btnConf = document.getElementById("btnConf"),
   $btnAddTurno = document.getElementById("btnAddTurno"),
@@ -105,7 +104,6 @@ function borradoRecursivo(nodo) {
   }
   nodo.parentNode.removeChild(nodo);
 }
-
 // ~~~~~~~~  FIN FUNCIONES COMPLEMENTARIAS ~~~~~~~~  //
 
 // ~~~~~~~~  FUNCIONES LLAMADAS DESDE LOS BOTONES ~~~~~~~~  //

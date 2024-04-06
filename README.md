@@ -52,3 +52,19 @@ La programación está estructurada en diferentes carpetas para separar la parte
 - datos: simula la persistencia
 
 Los formularios que se muestran para la inserción de datos se arman de forma dinámica de acuerdo a los datos que se encuentran en el archivo mockup.js al igual que los usuarios para loguearse en el sistema
+
+PENDIENTES:
+
+- agregar librerias
+- agregar fech para medicos y usuarios
+- apis
+- dni del paciente
+- agregar médicos
+- validar que si ya tiene un turno para el médico se lo muestre y no permita sacar otro
+- no mostrar días que no tengan disponibilidad en el cmb de turnos
+- guardar en storage los turnos y la conf inicial
+- poner la disponibilidad debajo del form de turnos
+- la consola siempre tiene que estar vacia de errores
+- crear una carpeta de json para usuarios y para medicos
+- pasar mockup a json separados
+- ver de usar template y fragment
