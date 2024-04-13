@@ -21,6 +21,8 @@ document.getElementById(
   "userLog"
 ).innerText = `Bienvenido ${localStorage.getItem("AppTurno-User")}`;
 
+// document.getElementById("userImg").src = localStorage.getItem("AppTurno-Img");
+
 // dependiendo en el entorno que nos encontremos presetea los los parámetros iniciales o no
 conf = controller.verificaEntorno();
 
@@ -33,6 +35,7 @@ $btnConf.addEventListener("click", (e) => {
 $btnAddTurno.addEventListener("click", (e) => {
   limpiarBody();
   cargaTurno();
+  getDisponibilidad();
 });
 
 $btnCnsDispo.addEventListener("click", (e) => {
@@ -46,12 +49,19 @@ $btnCnsTurn.addEventListener("click", (e) => {
 });
 
 $btnSalir.addEventListener("click", (e) => {
-  let salir = confirm("¿Está seguro que desea salir del sistema");
-  if (salir) {
-    limpiarBody();
-    localStorage.removeItem("AppTurno-User");
-    location.href = "./login.html";
-  }
+  Swal.fire({
+    title: "¿Esta seguro que desea salir?",
+    showCancelButton: true,
+    confirmButtonText: "Sí",
+    cancelButtonText: "No",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      limpiarBody();
+      localStorage.removeItem("AppTurno-User");
+      localStorage.removeItem("AppTurno-Img");
+      location.href = "./login.html";
+    }
+  });
 });
 
 // acción del botón grabar del formulario de turnos
@@ -66,11 +76,16 @@ $formTurno.addEventListener("submit", (e) => {
     ) == 0
   ) {
     mostrarMensaje(
-      `❌ No hay disponibilidad para el día / atención seleccionado, modifique el día o tipo de atención`
+      `No hay disponibilidad para el día / atención seleccionado, modifique el día o tipo de atención`,
+      "error"
     );
   } else {
     $formTurno.querySelector("input#lblPaciente").value = "";
-    mostrarMensaje(`✅ Se grabó correctamente el turno`);
+    mostrarMensaje(`Se grabó correctamente el turno`, "ok");
+
+    // Refresca las disponibilidades
+    borraNodosHijos($disponibilidad);
+    getDisponibilidad();
   }
 });
 // ~~~~~~~~  FIN EVENTO DE BOTONES  ~~~~~~~~  //
@@ -83,13 +98,22 @@ function limpiarBody() {
   borraNodosHijos($turnosTbl);
 }
 
-function mostrarMensaje(text) {
-  document.getElementById("mensaje").innerText = text;
-  document.getElementById("mensaje").setAttribute("style", "display:flex");
-  setTimeout(() => {
-    document.getElementById("mensaje").innerText = "";
-    document.getElementById("mensaje").setAttribute("style", "display:none");
-  }, 4000);
+function mostrarMensaje(text, tipo) {
+  let color =
+    tipo == "ok"
+      ? "linear-gradient(90deg, #49bb08 100%, #6ed136 100%)"
+      : "linear-gradient(90deg, rgb(245,5,5) 0%, rgb(190,40,1) 100%)";
+
+  Toastify({
+    text: text,
+    duration: 5500,
+
+    style: {
+      maxWidth: "400px",
+      color: "white",
+      background: color,
+    },
+  }).showToast();
 }
 
 function borraNodosHijos(nodo) {
@@ -111,7 +135,8 @@ function borradoRecursivo(nodo) {
 function setConfig() {
   if (conf != 0) {
     mostrarMensaje(
-      `🤚🏻 Solo se puede setear los parámetros 1 vez, para cambiarlos debe salir y volver a ingresar al sistema`
+      `Solo se puede setear los parámetros 1 vez, para cambiarlos debe salir y volver a ingresar al sistema`,
+      "error"
     );
     return;
   }
@@ -190,7 +215,7 @@ function setConfig() {
           el.value
         );
       }
-      mostrarMensaje(`✅ Se grabó correctamente los parámetros iniciales`);
+      mostrarMensaje(`Se grabó correctamente los parámetros iniciales`, "ok");
     });
 
     // quita el formulario
@@ -205,7 +230,7 @@ function setConfig() {
 function cargaTurno() {
   if (conf == 0) {
     // si no fueron definidos los parametros iniciales no permito la carga de turnos
-    mostrarMensaje(`🚨 Se debe definir los parámetros en configuración`);
+    mostrarMensaje(`Se debe definir los parámetros en configuración`, "error");
     return;
   }
 
@@ -213,7 +238,7 @@ function cargaTurno() {
   let texto = `
       <h2>📅 Carga de Turnos 📅</h2>
       <div>
-        <label for="lblPaciente">🙍🏼‍♂️ Nombre del paciente</label>
+        <label for="lblPaciente">Nombre</label>
         <input type="text" id="lblPaciente" required="true"></input>
       </div>
       <div>
@@ -256,32 +281,13 @@ function getDisponibilidad() {
   });
 
   if ($disponibilidad.childElementCount == 0) {
-    mostrarMensaje(`🚨 No hay horas cargadas para atención`);
+    mostrarMensaje(`No hay horas cargadas para atención`, "error");
   }
 }
 
 // devuelve los turnos cargados por día
 function getTurnos() {
-  // let li_dia;
   let cantTurnos = 0;
-
-  // // recorro el array con los días
-  // controller.getArryDisponibilidad().forEach((disp) => {
-  //   li_dia = document.createElement("li");
-  //   li_dia.innerText = `🗓️ Turnos ${disp.getNomDia()}: (Hs Atención ${disp.getHsAtencion()}) - (Hs Disponible ${disp.getHsDisponible()})`;
-  //   $turnos.append(li_dia);
-
-  //   // recorro el array de turnos filtrando por el día en el que me encuentro para obtener los turnos dados es ese día
-  //   controller
-  //     .getArryTurnos()
-  //     .filter((turn) => turn.getNumDia() == disp.getNumDia())
-  //     .forEach((e) => {
-  //       let li_paciente = document.createElement("li");
-  //       li_paciente.innerText = `___🙍🏼‍♂️ Nombre: ${e.getPaciente()} - 🚑 Atención: ${e.getNomAtencion()} (${e.getDuracionMin()} min.)`;
-  //       li_dia.append(li_paciente);
-  //       cantTurnos++;
-  //     });
-  // });
 
   // recorro el array con los días
   let tbl = `<table>`;
@@ -293,11 +299,12 @@ function getTurnos() {
     // recorro el array de turnos filtrando por el día en el que me encuentro para obtener los turnos dados es ese día
     controller
       .getArryTurnos()
+      // .filter((turn) => turn.getNumDia() == disp.getNumDia())
       .filter((turn) => turn.getNumDia() == disp.getNumDia())
       .forEach((e) => {
         tbl += `<tr class="row-paciente">
             <td></td>
-            <td> 🙍🏼‍♂️ Nombre: ${e.getPaciente()} </td>
+            <td> 🙍🏼‍♂️ Nombre: ${e.paciente} </td>
             <td> 🚑 Atención: ${e.getNomAtencion()} (${e.getDuracionMin()} min.) </td>
             </tr>`;
 
@@ -309,7 +316,7 @@ function getTurnos() {
   });
 
   if (cantTurnos == 0) {
-    mostrarMensaje(`🚨 No hay turnos asignados`);
+    mostrarMensaje(`No hay turnos asignados`, "error");
   }
 }
 // ~~~~~~~~  FIN FUNCIONES LLAMADAS DESDE LOS BOTONES ~~~~~~~~  //

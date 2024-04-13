@@ -55,16 +55,17 @@ Los formularios que se muestran para la inserción de datos se arman de forma di
 
 PENDIENTES:
 
-- agregar librerias
-- agregar fech para medicos y usuarios
-- apis
+OK - agregar librerias
+OK - guardar en storage los turnos y la conf inicial
+OK - poner la disponibilidad debajo del form de turnos
+OK - crear una carpeta de json para usuarios
+OK - agregar fech para usuarios
+
 - dni del paciente
-- agregar médicos
-- validar que si ya tiene un turno para el médico se lo muestre y no permita sacar otro
-- no mostrar días que no tengan disponibilidad en el cmb de turnos
-- guardar en storage los turnos y la conf inicial
-- poner la disponibilidad debajo del form de turnos
-- la consola siempre tiene que estar vacia de errores
-- crear una carpeta de json para usuarios y para medicos
+- validar que si ya tiene un turno se lo muestre y no permita sacar otro
+
 - pasar mockup a json separados
+
+- no mostrar días que no tengan disponibilidad en el cmb de turnos
 - ver de usar template y fragment
+- la consola siempre tiene que estar vacia de errores

@@ -1,6 +1,22 @@
 [
-  { "user": "pepe", "pass": "123" },
-  { "user": "jose", "pass": "321" },
-  { "user": "pedro", "pass": "135" },
-  { "user": "juan", "pass": "246" }
+  {
+    "user": "pepe",
+    "pass": "123",
+    "img": "../img/users/usr0.png"
+  },
+  {
+    "user": "jose",
+    "pass": "321",
+    "img": "../img/users/usr1.png"
+  },
+  {
+    "user": "pedro",
+    "pass": "135",
+    "img": "../img/users/usr2.png"
+  },
+  {
+    "user": "juan",
+    "pass": "246",
+    "img": "../img/users/usr3.png"
+  }
 ]

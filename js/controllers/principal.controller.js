@@ -1,7 +1,5 @@
 class Controller {
-  arryDisponibilidad = [];
   arryTipoAtencion = [];
-  arryTurnos = [];
 
   constructor() {
     this.mockup = new Mockup();
@@ -19,7 +17,8 @@ class Controller {
 
   // Crea objeto y lo agrega a la lista de Disponibilidades
   cargaDisponibilidad(i, horas) {
-    this.arryDisponibilidad.push(
+    let arry = this.getArryDisponibilidad();
+    arry.push(
       new Disponibilidad(
         i,
         this.devuelveDiasDeAtencion()[i],
@@ -27,33 +26,35 @@ class Controller {
         horas * 60
       )
     );
+    localStorage.setItem("AppTurno-Disponibilidad", JSON.stringify(arry));
   }
 
   // Crea objeto y lo agrega a la lista de Tipo de Atención
   cargaTipoDeAtencion(i, min) {
-    this.arryTipoAtencion.push(
-      new TipoAtencion(i, this.devuelveTiposDeAtencion()[i], min)
-    );
+    let arry = this.getArryTipoDeAtencion();
+    arry.push(new TipoAtencion(i, this.devuelveTiposDeAtencion()[i], min));
+    console.log(arry);
+    localStorage.setItem("AppTurno-TipoAtencion", JSON.stringify(arry));
   }
 
-  // Crea objeto y lo agrega a la lista de Turnos
+  // Obtiene un array con los turnos del localStorage, agrega el nuevo Turnos,  lo guarda en el localStorage
   cargaTurno(paciente, numDia, nomDia, numAt, nomAt, duracionMin) {
-    this.arryTurnos.push(
-      new Turno(paciente, numDia, nomDia, numAt, nomAt, duracionMin)
-    );
+    let array = this.getArryTurnos();
+    array.push(new Turno(paciente, numDia, nomDia, numAt, nomAt, duracionMin));
+    localStorage.setItem("AppTurno-Turnos", JSON.stringify(array));
   }
 
-  // Valida disponibilidad para el Día seleccionado y Tipo de Atención
-  // en caso de existir disponibilidad registra el turno y devuelve 1, sino devuelve 0
+  // Valida disponibilidad para el Día seleccionado y Tipo de Atención, en caso de existir disponibilidad registra el turno y devuelve 1, sino devuelve 0
   validarGrabarTurno(nombre, dia, tipoAtencion) {
-    // Obtengo el objeto con la información del día seleccionado
-    let objDisp = this.getArryDisponibilidad().find(
-      (e) => e.getNumDia() == dia - 1
-    );
+    // Obtengo el array con las disponibilidades de todos los dias desde localStorage
+    let arryLocalStorage = this.getArryDisponibilidad();
+
+    // Obtengo el objeto de disponibilidad para del día seleccionado
+    let objDisp = arryLocalStorage.find((el) => el.getNumDia() == dia - 1);
 
     //Obtengo el objeto con la información del tipo de atención seleccionado
     let objAt = this.getArryTipoDeAtencion().find(
-      (e) => e.getNumAtencion() == tipoAtencion - 1
+      (el) => el.getNumAtencion() == tipoAtencion - 1
     );
 
     // Verifico la disponibilidad de acuerdo al día seleccionado y el tipo de atención
@@ -64,6 +65,12 @@ class Controller {
       // si hay disponibilidad, actualizo los minutos disponibles
       let valor = objDisp.getMinDisponible() - objAt.getDuracionMin();
       objDisp.setMinDisponible(valor);
+
+      // Actualizo en localSorage la disponibilidad
+      localStorage.setItem(
+        "AppTurno-Disponibilidad",
+        JSON.stringify(arryLocalStorage)
+      );
 
       // llamo a la funcion para la carga en la lista de turnos el objeto del turno y retorno 1
       this.cargaTurno(
@@ -78,32 +85,91 @@ class Controller {
     }
   }
 
+  // Devuelve un array con todos los dias ya registrados y la disponibilidad obteniendolo del localStorage
   getArryDisponibilidad() {
-    return this.arryDisponibilidad;
+    let arryDisponibilidad = [];
+    if (localStorage.getItem("AppTurno-Disponibilidad") != null) {
+      JSON.parse(localStorage.getItem("AppTurno-Disponibilidad")).forEach(
+        (el, index) => {
+          arryDisponibilidad.push(
+            new Disponibilidad(
+              el.numDia,
+              this.devuelveDiasDeAtencion()[index],
+              el.minAtencion,
+              el.minDisponible
+            )
+          );
+        }
+      );
+    }
+    return arryDisponibilidad;
   }
 
+  // Devuelve un array con todos los tipo de atencion ya registrados con duracion obteniendolo del localStorage
   getArryTipoDeAtencion() {
-    return this.arryTipoAtencion;
+    let arryTipoAtencion = [];
+    if (localStorage.getItem("AppTurno-TipoAtencion") != null) {
+      JSON.parse(localStorage.getItem("AppTurno-TipoAtencion")).forEach(
+        (el, index) => {
+          arryTipoAtencion.push(
+            new TipoAtencion(
+              index,
+              this.devuelveTiposDeAtencion()[index],
+              el.duracionMin
+            )
+          );
+        }
+      );
+    }
+
+    return arryTipoAtencion;
   }
 
+  // Devuelve un array con todos los turnos ya registrados obteniendolo del localStorage
   getArryTurnos() {
-    return this.arryTurnos;
+    let arryTurnos = [];
+    if (localStorage.getItem("AppTurno-Turnos") != null) {
+      JSON.parse(localStorage.getItem("AppTurno-Turnos")).forEach((el) => {
+        arryTurnos.push(
+          new Turno(
+            el.paciente,
+            el.numDia,
+            el.nomDia,
+            el.numAtencion,
+            el.nomAtencion,
+            el.duracionMin
+          )
+        );
+      });
+    }
+
+    return arryTurnos;
   }
 
-  // para el caso que se trabaje en el entorno de desarrollo se presetean los parametros iniciales con los valores definidos en env.js
+  // si estamos en el entorno de desarrollo se presetean los parametros iniciales con los valores definidos en env.js
   verificaEntorno() {
-    if (ENTORNO == "develop") {
-      this.devuelveDiasDeAtencion().forEach((el, index) =>
-        this.cargaDisponibilidad(index, HORADISPONIBLE)
-      );
-
-      this.devuelveTiposDeAtencion().forEach((el, i) =>
-        this.cargaTipoDeAtencion(i, DIF_MIN_ATENCION * (i + 1))
-      );
-
+    if (ENTORNO == "develop1") {
+      if (localStorage.getItem("AppTurno-Disponibilidad") == null) {
+        this.devuelveDiasDeAtencion().forEach((el, index) =>
+          this.cargaDisponibilidad(index, HORADISPONIBLE)
+        );
+      }
+      if (localStorage.getItem("AppTurno-TipoAtencion") == null) {
+        this.devuelveTiposDeAtencion().forEach((el, i) =>
+          this.cargaTipoDeAtencion(i, DIF_MIN_ATENCION * (i + 1))
+        );
+      }
       return 1;
     } else {
-      return 0;
+      // en el caso que no se encuentre en entorno de desarrollo pero ya se setearon los parametros iniciales los bloquea
+      if (
+        localStorage.getItem("AppTurno-Disponibilidad") != null &&
+        localStorage.getItem("AppTurno-TipoAtencion") != null
+      ) {
+        return 1;
+      } else {
+        return 0;
+      }
     }
   }
 }
