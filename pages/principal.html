@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- LIBRERIAS -->
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-
   <!-- CSS  -->
   <link rel="stylesheet" href="../css/style.css">
   <title>Salud</title>
@@ -16,27 +15,42 @@
   <header>
     <h1>Mini Sistema de Turnos</h1>
   </header>
-  <img id="userImg" src="" alt="">
-  <h3 id="userLog"></h3>
-  <main>
 
+  <main>
+    <section class="sec-info-login">
+      <img id="userImg" src="" alt="">
+      <h4 id="userLog"></h4>
+    </section>
     <section class="menu" id="menu">
       <button class="btnMenu" id="btnConf">⚙️ Configuración</button>
       <button class="btnMenu" id="btnAddTurno">📝 Cargar Turnos</button>
-      <button class="btnMenu" id="btnCnsDispo">⏱️ Disponibilidad</button>
-      <button class="btnMenu" id="btnCnsTurn">📊 Turnos Asignados</button>
+      <button class="btnMenu" id="btnDeleteTurno">✂️ Eliminar Turnos</button>
+      <button class="btnMenu" id="btnCnsTurn">📊 Consultar Turnos</button>
+      <button class="btnMenu" id="btnReset">🗑️ Borrar Información</button>
       <button class="btnMenu" id="btnSalir">🛫 Salir</button>
     </section>
 
-    <p id="mensaje"></p>
 
     <form id="formConfig" class="formConfig"></form>
 
     <form id="formTurno" class="formTurno"></form>
 
-    <ol id="disponibilidad"></ol>
+    <section id="sec-disponibilidad">
+      <h3 id="titulo-disp"></h3>
+      <ol id="disponibilidad"></ol>
+      <div class="card-disponibilidad-content"></div>
+    </section>
+
+
 
     <table id="tblTurnos" class="tabla-turnos"></table>
+
+    <template id="template-disponibilidad">
+      <div class="card-disponibilidad">
+        <h4 class="card-disponibilidad-titulo"></h4>
+        <p class="card-disponibilidad-texto"></p>
+      </div>
+    </template>
 
   </main>
 

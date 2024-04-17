@@ -3,12 +3,15 @@ let conf = 0,
 
 const $formConf = document.getElementById("formConfig"),
   $formTurno = document.getElementById("formTurno"),
-  $disponibilidad = document.getElementById("disponibilidad"),
+  $secDisponibilidad = document.getElementById("sec-disponibilidad"),
+  $tituloDispo = document.getElementById("titulo-disp"),
+  $disponibilidadCard = document.querySelector(".card-disponibilidad-content"),
   $turnosTbl = document.getElementById("tblTurnos"),
   $btnConf = document.getElementById("btnConf"),
   $btnAddTurno = document.getElementById("btnAddTurno"),
-  $btnCnsDispo = document.getElementById("btnCnsDispo"),
+  $btnDeleteTurno = document.getElementById("btnDeleteTurno"),
   $btnCnsTurn = document.getElementById("btnCnsTurn"),
+  $btnReset = document.getElementById("btnReset"),
   $btnSalir = document.getElementById("btnSalir");
 
 // En caso de no haberse logueado redirecciona al login
@@ -21,14 +24,13 @@ document.getElementById(
   "userLog"
 ).innerText = `Bienvenido ${localStorage.getItem("AppTurno-User")}`;
 
-// document.getElementById("userImg").src = localStorage.getItem("AppTurno-Img");
+document.getElementById("userImg").src = localStorage.getItem("AppTurno-Img");
 
 // dependiendo en el entorno que nos encontremos presetea los los parámetros iniciales o no
 conf = controller.verificaEntorno();
 
 // ~~~~~~~~  EVENTO DE BOTONES  ~~~~~~~~  //
 $btnConf.addEventListener("click", (e) => {
-  limpiarBody();
   setConfig();
 });
 
@@ -38,14 +40,18 @@ $btnAddTurno.addEventListener("click", (e) => {
   getDisponibilidad();
 });
 
-$btnCnsDispo.addEventListener("click", (e) => {
+$btnDeleteTurno.addEventListener("click", (e) => {
   limpiarBody();
-  getDisponibilidad();
+  deleteTurno();
 });
 
 $btnCnsTurn.addEventListener("click", (e) => {
   limpiarBody();
   getTurnos();
+});
+
+$btnReset.addEventListener("click", (e) => {
+  deleteInfo();
 });
 
 $btnSalir.addEventListener("click", (e) => {
@@ -64,40 +70,94 @@ $btnSalir.addEventListener("click", (e) => {
   });
 });
 
-// acción del botón grabar del formulario de turnos
+// grabo la configuracion de parametros de acuerdo a los valores introducidos
+$formConf.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  let arryDiasDeAtencion = controller.devuelveDiasDeAtencion();
+  let arryTiposDeAtencion = controller.devuelveTiposDeAtencion();
+
+  $formConf.querySelectorAll("input").forEach((el, index) => {
+    if (index < arryDiasDeAtencion.length) {
+      // obtengo la posicion y valor de los input de días de atencion y los guardo
+      controller.cargaDisponibilidad(index, el.value);
+    } else if (index - arryDiasDeAtencion.length < arryTiposDeAtencion.length) {
+      // obtengo la posicion y valor de los input de tipos de atencion y los guardo
+      controller.cargaTipoDeAtencion(
+        index - arryDiasDeAtencion.length,
+        el.value
+      );
+    }
+  });
+
+  mostrarMensaje(`Se grabó correctamente los parámetros iniciales`, "ok");
+  // quita el formulario
+  borraNodosHijos($formConf);
+
+  // bandera para identificar que ya se cargaron los parámetros iniciales
+  conf = 1;
+});
+
+// acción botón grabar del formulario de turnos
 $formTurno.addEventListener("submit", (e) => {
   e.preventDefault();
 
-  if (
-    controller.validarGrabarTurno(
-      $formTurno.querySelector("input#lblPaciente").value,
-      $formTurno.querySelector("select#selDia").selectedIndex + 1,
-      $formTurno.querySelector("select#selAtencion").selectedIndex + 1
-    ) == 0
-  ) {
+  let valorDevuelto = controller.cargarTurno(
+    $formTurno.querySelector("input#lblDni").value,
+    $formTurno.querySelector("input#lblPaciente").value,
+    $formTurno.querySelector("select#selDia").selectedIndex + 1,
+    $formTurno.querySelector("select#selAtencion").selectedIndex + 1
+  );
+  if (valorDevuelto == 0) {
     mostrarMensaje(
-      `No hay disponibilidad para el día / atención seleccionado, modifique el día o tipo de atención`,
+      `No hay disponibilidad para el día/atención seleccionado`,
       "error"
     );
+    $formTurno.querySelector("select#selDia").focus();
+  } else if (valorDevuelto == 2) {
+    mostrarMensaje(`Ya existe cargado un turno para ese dni / día`, "error");
+    $formTurno.querySelector("input#lblDni").focus();
   } else {
     $formTurno.querySelector("input#lblPaciente").value = "";
+    $formTurno.querySelector("input#lblDni").value = "";
+    $formTurno.querySelector("input#lblDni").focus();
     mostrarMensaje(`Se grabó correctamente el turno`, "ok");
 
     // Refresca las disponibilidades
-    borraNodosHijos($disponibilidad);
+    borraNodosHijos($disponibilidadCard);
     getDisponibilidad();
+  }
+});
+
+// acción botón eliminar turnos
+$turnosTbl.addEventListener("click", (e) => {
+  if (e.target.matches("button.btn-delete")) {
+    Swal.fire({
+      title: "¿Esta seguro que desea borrar el turno?",
+      showCancelButton: true,
+      confirmButtonText: "Sí",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // llamo función que elimina turno del localStorage y le paso array del id
+        controller.deleteTurno(
+          e.target.parentNode.parentNode
+            .getAttribute("data-attribute-id")
+            .split("_")
+        );
+
+        mostrarMensaje(`Se quito correctamente el turno`, "ok");
+
+        // elimino el turno del html
+        limpiarBody();
+        deleteTurno();
+      }
+    });
   }
 });
 // ~~~~~~~~  FIN EVENTO DE BOTONES  ~~~~~~~~  //
 
 // ~~~~~~~~  FUNCIONES COMPLEMENTARIAS ~~~~~~~~  //
-function limpiarBody() {
-  borraNodosHijos($formConf);
-  borraNodosHijos($formTurno);
-  borraNodosHijos($disponibilidad);
-  borraNodosHijos($turnosTbl);
-}
-
 function mostrarMensaje(text, tipo) {
   let color =
     tipo == "ok"
@@ -116,6 +176,15 @@ function mostrarMensaje(text, tipo) {
   }).showToast();
 }
 
+function limpiarBody() {
+  borraNodosHijos($formConf);
+  borraNodosHijos($formTurno);
+  borraNodosHijos($secDisponibilidad);
+  borraNodosHijos($disponibilidadCard);
+  borraNodosHijos($turnosTbl);
+  $secDisponibilidad.classList = "";
+}
+
 function borraNodosHijos(nodo) {
   while (nodo.hasChildNodes()) {
     borradoRecursivo(nodo.firstChild);
@@ -131,15 +200,18 @@ function borradoRecursivo(nodo) {
 // ~~~~~~~~  FIN FUNCIONES COMPLEMENTARIAS ~~~~~~~~  //
 
 // ~~~~~~~~  FUNCIONES LLAMADAS DESDE LOS BOTONES ~~~~~~~~  //
+
 // Configuración de parámetros iniciales
 function setConfig() {
   if (conf != 0) {
     mostrarMensaje(
-      `Solo se puede setear los parámetros 1 vez, para cambiarlos debe salir y volver a ingresar al sistema`,
+      `Solo se puede setear los parámetros 1 vez, para cambiarlos debe borrar la información`,
       "error"
     );
     return;
   }
+  limpiarBody();
+
   // armo formulario con los campos necesarios de acuerdo a los dias de atencion
   let tituloDias = document.createElement("h2");
   tituloDias.innerText = `⏰ Horas de Atención por Día ⏰`;
@@ -196,41 +268,12 @@ function setConfig() {
   btn.setAttribute("value", `💾 Grabar`);
   btn.setAttribute("class", "btnForm");
   $formConf.append(btn);
-
-  // grabo la configuracion de parametros de acuerdo a los valores introducidos
-  $formConf.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    $formConf.querySelectorAll("input").forEach((el, index) => {
-      if (index < arryDiasDeAtencion.length) {
-        // obtengo la posicion y valor de los input de días de atencion y los guardo
-        controller.cargaDisponibilidad(index, el.value);
-      } else if (
-        index - arryDiasDeAtencion.length <
-        arryTiposDeAtencion.length
-      ) {
-        // obtengo la posicion y valor de los input de tipos de atencion y los guardo
-        controller.cargaTipoDeAtencion(
-          index - arryDiasDeAtencion.length,
-          el.value
-        );
-      }
-      mostrarMensaje(`Se grabó correctamente los parámetros iniciales`, "ok");
-    });
-
-    // quita el formulario
-    borraNodosHijos($formConf);
-
-    // bandera para identificar que ya se cargaron los parámetros iniciales
-    conf = 1;
-  });
 }
 
 // Solicita el ingreso de los datos del turno y valida disponibilidad
 function cargaTurno() {
   if (conf == 0) {
     // si no fueron definidos los parametros iniciales no permito la carga de turnos
-    mostrarMensaje(`Se debe definir los parámetros en configuración`, "error");
     return;
   }
 
@@ -238,11 +281,13 @@ function cargaTurno() {
   let texto = `
       <h2>📅 Carga de Turnos 📅</h2>
       <div>
+      <label for="lblDni">DNI</label>
+        <input type="number" id="lblDni" required="true"></input>
         <label for="lblPaciente">Nombre</label>
         <input type="text" id="lblPaciente" required="true"></input>
       </div>
       <div>
-        <label for="selDia">🗓️ Día</label>
+        <label for="selDia">Día</label>
         <select id="selDia">`;
 
   let arryDiasDeAtencion = controller.devuelveDiasDeAtencion();
@@ -253,7 +298,7 @@ function cargaTurno() {
   }
 
   texto += `</select>
-        <label for="selAtencion">🚑 Tipo de Atención</label>
+        <label for="selAtencion">Tipo de Atención</label>
         <select id="selAtencion">`;
 
   let arryTiposDeAtencion = controller.devuelveTiposDeAtencion();
@@ -270,22 +315,83 @@ function cargaTurno() {
       `;
 
   $formTurno.innerHTML = texto;
+  $formTurno.querySelector("input#lblDni").focus();
 }
 
-// devuelve las horas disponible para atención en cada día
-function getDisponibilidad() {
-  controller.getArryDisponibilidad().forEach((e) => {
-    let li = document.createElement("li");
-    li.innerText = `⏰ Horas Disponible ${e.getNomDia()}: ${e.getHsDisponible()}`;
-    $disponibilidad.append(li);
+// Elimina un turno
+function deleteTurno() {
+  let cantTurnos = 0;
+
+  // recorro el array con los días
+  let tbl = `<table>`;
+
+  controller.getArryDisponibilidad().forEach((disp) => {
+    tbl += `<tr class="row-dia">
+        <td colspan="3" > 🗓️ Turnos ${disp.getNomDia()} - (Hs Atención ${disp.getHsAtencion()}) - (Hs Disponible ${disp.getHsDisponible()}) </td> 
+      </tr>`;
+
+    // recorro el array de turnos filtrando por el día en el que me encuentro para obtener los turnos dados es ese día
+    controller
+      .getArryTurnos()
+      .filter((turn) => turn.getNumDia() == disp.getNumDia())
+      .forEach((e, ind) => {
+        if (ind == 0) {
+          tbl += `<tr class="row-paciente-hd">
+            <td class="cel-paciente"> Num Doc</td>
+            <td class="cel-paciente"> Nombre</td>
+            <td class="cel-paciente"> Atención </td>
+            </tr>`;
+        }
+
+        tbl += `<tr class="row-paciente" data-attribute-id="${e.numDia}_${
+          e.dni
+        }_${e.numAtencion}">
+            <td class="cel-paciente-dni"> ${e.dni}</td>
+            <td class="cel-paciente"> ${e.paciente} </td>
+            <td class="cel-paciente"> ${e.getNomAtencion()} (${e.getDuracionMin()} min.) </td>
+            <td class="cel-paciente-btn1"> <button  class = "btn-delete">   </button> </td>
+            </tr>`;
+
+        cantTurnos++;
+      });
+    tbl += `</table>`;
+
+    $turnosTbl.innerHTML = tbl;
   });
 
-  if ($disponibilidad.childElementCount == 0) {
-    mostrarMensaje(`No hay horas cargadas para atención`, "error");
+  if (cantTurnos == 0) {
+    mostrarMensaje(`No hay turnos asignados`, "error");
   }
 }
 
-// devuelve los turnos cargados por día
+// Devuelve las horas disponible para atención en cada día
+function getDisponibilidad() {
+  if (conf == 0) {
+    mostrarMensaje(`No hay horas cargadas para atención`, "error");
+    return;
+  }
+
+  const $fragmentDisp = document.createDocumentFragment();
+
+  controller.getArryDisponibilidad().forEach((e) => {
+    let clon = document
+      .getElementById("template-disponibilidad")
+      .content.cloneNode(true);
+
+    clon.querySelector("h4").innerText = e.getNomDia();
+    clon.querySelector("p").innerText = `${e.getHsDisponible()} Hs.`;
+
+    $fragmentDisp.append(clon);
+  });
+  $disponibilidadCard.append($fragmentDisp);
+
+  $tituloDispo.innerText = "Disponibilidades";
+  $secDisponibilidad.append($tituloDispo);
+  $secDisponibilidad.append($disponibilidadCard);
+  $secDisponibilidad.classList = "sec-disponibilidad";
+}
+
+// Devuelve los turnos cargados por día
 function getTurnos() {
   let cantTurnos = 0;
 
@@ -299,13 +405,19 @@ function getTurnos() {
     // recorro el array de turnos filtrando por el día en el que me encuentro para obtener los turnos dados es ese día
     controller
       .getArryTurnos()
-      // .filter((turn) => turn.getNumDia() == disp.getNumDia())
       .filter((turn) => turn.getNumDia() == disp.getNumDia())
-      .forEach((e) => {
+      .forEach((e, ind) => {
+        if (ind == 0) {
+          tbl += `<tr class="row-paciente-hd-1">
+            <td class="cel-paciente"> Num Doc</td>
+            <td class="cel-paciente"> Nombre</td>
+            <td class="cel-paciente"> Atención </td>
+            </tr>`;
+        }
         tbl += `<tr class="row-paciente">
-            <td></td>
-            <td> 🙍🏼‍♂️ Nombre: ${e.paciente} </td>
-            <td> 🚑 Atención: ${e.getNomAtencion()} (${e.getDuracionMin()} min.) </td>
+            <td class="cel-paciente"> ${e.dni}</td>
+            <td class="cel-paciente"> ${e.paciente} </td>
+            <td class="cel-paciente"> ${e.getNomAtencion()} (${e.getDuracionMin()} min.) </td>
             </tr>`;
 
         cantTurnos++;
@@ -318,5 +430,28 @@ function getTurnos() {
   if (cantTurnos == 0) {
     mostrarMensaje(`No hay turnos asignados`, "error");
   }
+}
+
+// Elimina toda la configuración inicial
+function deleteInfo() {
+  if (conf == 0) {
+    mostrarMensaje(`No hay horas cargadas para atención`, "error");
+    return;
+  }
+
+  Swal.fire({
+    title: "¿Esta seguro que desea borrar toda la información?",
+    showCancelButton: true,
+    confirmButtonText: "Sí",
+    cancelButtonText: "No",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      limpiarBody();
+      localStorage.removeItem("AppTurno-Turnos");
+      localStorage.removeItem("AppTurno-Disponibilidad");
+      localStorage.removeItem("AppTurno-TipoAtencion");
+      conf = 0;
+    }
+  });
 }
 // ~~~~~~~~  FIN FUNCIONES LLAMADAS DESDE LOS BOTONES ~~~~~~~~  //

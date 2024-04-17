@@ -1,6 +1,5 @@
 let controller = new Controller();
 const $formLogin = document.getElementById("formLogin");
-
 // ~~~~~~~~  EVENTO DE BOTONES  ~~~~~~~~  //
 $formLogin.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -16,6 +15,7 @@ $formLogin.addEventListener("submit", async (e) => {
     location.href = "./principal.html";
   }
 });
+
 // ~~~~~~~~  FIN EVENTO DE BOTONES  ~~~~~~~~  //
 
 // ~~~~~~~~  FUNCIONES COMPLEMENTARIAS ~~~~~~~~  //
@@ -44,7 +44,6 @@ getApi();
 async function getApi() {
   try {
     let url = "../js/db/usuarios.json";
-    // let url = "https://pokeapi.co/api/v2/pokemon/ditto";
     let resp = await fetch(url);
     let data = await resp.json();
     render(data);
@@ -54,15 +53,18 @@ async function getApi() {
 }
 
 function render(data) {
+  document.getElementById("usersPrueba").innerText = "Usuarios de Prueba";
+
   const $fragment = document.createDocumentFragment();
   data.forEach((e, i) => {
     let clon = document.querySelector("template").content.cloneNode(true);
 
-    clon.querySelector("h5").innerText = `User: ${data[i].user}`;
     clon.querySelector("img").src = data[i].img;
+    clon.querySelector("h5").innerText = `User: ${data[i].user}`;
     clon.querySelector("p").innerText = `Pass: ${data[i].pass}`;
 
     $fragment.appendChild(clon);
   });
+
   document.querySelector(".card-content").append($fragment);
 }

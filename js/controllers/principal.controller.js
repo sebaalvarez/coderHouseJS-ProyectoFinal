@@ -1,6 +1,4 @@
 class Controller {
-  arryTipoAtencion = [];
-
   constructor() {
     this.mockup = new Mockup();
   }
@@ -33,59 +31,108 @@ class Controller {
   cargaTipoDeAtencion(i, min) {
     let arry = this.getArryTipoDeAtencion();
     arry.push(new TipoAtencion(i, this.devuelveTiposDeAtencion()[i], min));
-    console.log(arry);
+
     localStorage.setItem("AppTurno-TipoAtencion", JSON.stringify(arry));
   }
 
-  // Obtiene un array con los turnos del localStorage, agrega el nuevo Turnos,  lo guarda en el localStorage
-  cargaTurno(paciente, numDia, nomDia, numAt, nomAt, duracionMin) {
-    let array = this.getArryTurnos();
-    array.push(new Turno(paciente, numDia, nomDia, numAt, nomAt, duracionMin));
-    localStorage.setItem("AppTurno-Turnos", JSON.stringify(array));
+  // Quitar turno y actualizar disponibilidad del día
+  deleteTurno(id) {
+    // definición del parámetro id:
+    // id[0]: numDia   ||   id[1]: dni   ||  id[2]: numAtencion
+
+    let arryTurno = this.getArryTurnos();
+
+    let indDelete = arryTurno.findIndex(
+      (e) => e.dni == id[1] && e.numDia == id[0] && e.numAtencion == id[2]
+    );
+
+    arryTurno.splice(indDelete, 1);
+
+    localStorage.setItem("AppTurno-Turnos", JSON.stringify(arryTurno));
+
+    // Inicio Actualizar la disponibilidad luego de quitar el turno //
+    // Obtengo la duración de la atención eliminadda
+    let duracion = this.getArryTipoDeAtencion()
+      .find((e) => e.getNumAtencion() == id[2])
+      .getDuracionMin();
+
+    // Actualizo disponibilidad
+    let arryDispo = this.getArryDisponibilidad();
+    let objDia = arryDispo.find((e) => e.getNumDia() == id[0]);
+
+    objDia.setMinDisponible(
+      Number(objDia.getMinDisponible()) + Number(duracion)
+    );
+
+    localStorage.setItem("AppTurno-Disponibilidad", JSON.stringify(arryDispo));
+
+    // Fin Actualizar la disponibilidad luego de quitar el turno //
   }
 
-  // Valida disponibilidad para el Día seleccionado y Tipo de Atención, en caso de existir disponibilidad registra el turno y devuelve 1, sino devuelve 0
-  validarGrabarTurno(nombre, dia, tipoAtencion) {
+  cargarTurno(dni, nombre, dia, tipoAtencion) {
+    // Esta función valida lo siguiente y registra el turno:
+    // - que no exista ya registrado un turno para el dni y día indicado -- error devuelve 2
+    // - que exista disponibilidad para el día seleccionado y tipo de atención -- error devuelve 0
+
+    // Valido que ya no exista un turno para ese día y dni
+    let arryLocalStorageTurno = this.getArryTurnos();
+    let existe = arryLocalStorageTurno.find(
+      (e) =>
+        Number(e.getNumDia()) == Number(dia - 1) &&
+        Number(e.getDni()) == Number(dni)
+    );
+    if (existe != undefined) {
+      return 2;
+    }
+
     // Obtengo el array con las disponibilidades de todos los dias desde localStorage
-    let arryLocalStorage = this.getArryDisponibilidad();
+    let arryLocalStorageDispo = this.getArryDisponibilidad();
 
     // Obtengo el objeto de disponibilidad para del día seleccionado
-    let objDisp = arryLocalStorage.find((el) => el.getNumDia() == dia - 1);
+    let objDisp = arryLocalStorageDispo.find((el) => el.getNumDia() == dia - 1);
 
     //Obtengo el objeto con la información del tipo de atención seleccionado
     let objAt = this.getArryTipoDeAtencion().find(
       (el) => el.getNumAtencion() == tipoAtencion - 1
     );
 
-    // Verifico la disponibilidad de acuerdo al día seleccionado y el tipo de atención
+    // Valido la disponibilidad de acuerdo al día seleccionado y el tipo de atención
     if (objDisp.getMinDisponible() - objAt.getDuracionMin() < 0) {
-      // Si no hay disponibilidad en minutos retorno 0
       return 0;
-    } else {
-      // si hay disponibilidad, actualizo los minutos disponibles
-      let valor = objDisp.getMinDisponible() - objAt.getDuracionMin();
-      objDisp.setMinDisponible(valor);
+    }
 
-      // Actualizo en localSorage la disponibilidad
-      localStorage.setItem(
-        "AppTurno-Disponibilidad",
-        JSON.stringify(arryLocalStorage)
-      );
+    // Actualizo los minutos disponibles
+    objDisp.setMinDisponible(
+      objDisp.getMinDisponible() - objAt.getDuracionMin()
+    );
 
-      // llamo a la funcion para la carga en la lista de turnos el objeto del turno y retorno 1
-      this.cargaTurno(
+    // Actualizo en localSorage la disponibilidad
+    localStorage.setItem(
+      "AppTurno-Disponibilidad",
+      JSON.stringify(arryLocalStorageDispo)
+    );
+
+    // Actualizo en localSotrage el turno
+    arryLocalStorageTurno.push(
+      new Turno(
+        dni,
         nombre,
         objDisp.getNumDia(),
         objDisp.getNomDia(),
         objAt.getNumAtencion(),
         objAt.getNomAtencion(),
         objAt.getDuracionMin()
-      );
-      return 1;
-    }
+      )
+    );
+
+    localStorage.setItem(
+      "AppTurno-Turnos",
+      JSON.stringify(arryLocalStorageTurno)
+    );
+    return 1;
   }
 
-  // Devuelve un array con todos los dias ya registrados y la disponibilidad obteniendolo del localStorage
+  // Devuelve array desde localStorage con los dias y la disponibilidad registrados
   getArryDisponibilidad() {
     let arryDisponibilidad = [];
     if (localStorage.getItem("AppTurno-Disponibilidad") != null) {
@@ -105,7 +152,7 @@ class Controller {
     return arryDisponibilidad;
   }
 
-  // Devuelve un array con todos los tipo de atencion ya registrados con duracion obteniendolo del localStorage
+  // Devuelve array desde localStorage los tipo de atencion con duracion registrados
   getArryTipoDeAtencion() {
     let arryTipoAtencion = [];
     if (localStorage.getItem("AppTurno-TipoAtencion") != null) {
@@ -125,13 +172,14 @@ class Controller {
     return arryTipoAtencion;
   }
 
-  // Devuelve un array con todos los turnos ya registrados obteniendolo del localStorage
+  // Devuelve array desde localStorage los turnos registrados
   getArryTurnos() {
     let arryTurnos = [];
     if (localStorage.getItem("AppTurno-Turnos") != null) {
       JSON.parse(localStorage.getItem("AppTurno-Turnos")).forEach((el) => {
         arryTurnos.push(
           new Turno(
+            el.dni,
             el.paciente,
             el.numDia,
             el.nomDia,

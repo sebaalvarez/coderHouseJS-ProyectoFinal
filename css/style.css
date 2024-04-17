@@ -6,14 +6,16 @@
 
 :root {
   --color-btn: rgb(39, 72, 172);
+  --color-white: white;
+  --color-paciente-hd: #e3e39f;
 }
 
 header {
   background-color: var(--color-btn);
-  margin-bottom: 20px;
+  margin-bottom: 5px;
   & h1 {
     text-align: center;
-    color: white;
+    color: var(--color-white);
     padding-block: 20px;
     font-size: 40px;
   }
@@ -37,7 +39,7 @@ body {
   justify-content: center;
   align-items: center;
   text-align: center;
-  color: rgb(255, 253, 253);
+  color: var(--color-white);
   padding-block: 20px;
   font-size: 40px;
 }
@@ -49,17 +51,18 @@ body {
   top: 10px;
   right: 10px;
   background-color: rgb(220, 23, 23);
-  color: aliceblue;
+  color: var(--color-white);
   padding: 10px;
   border-radius: 20px;
   text-decoration: none;
 }
 
 .linkSistema:hover {
-  background-color: white;
+  background-color: var(--color-white);
   color: rgb(248, 5, 5);
 }
-/*   Pagina de login     */
+
+/*  INICIO  Página de login     */
 .formLogin {
   background-color: beige;
   max-width: 350px;
@@ -71,7 +74,7 @@ body {
   margin: auto;
   border-radius: 20px;
   padding-bottom: 10px;
-  margin-bottom: 20px;
+  margin-block: 20px;
   & div {
     padding: 5px;
   }
@@ -95,152 +98,13 @@ body {
   justify-content: center;
 }
 
-#mensaje {
-  display: none;
-  flex-wrap: wrap;
-  justify-content: right;
-  align-items: center;
-  max-width: 25%;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: rgb(234, 244, 244);
-  border: 1px solid black;
-  border-radius: 10px;
-  padding: 10px;
-}
-
-/*  Paginas del sistema      */
-#userLog {
-  display: flex;
-  justify-content: end;
-  align-items: center;
-  padding-right: 20px;
-}
-
-h1 {
-  text-align: center;
-  color: rgb(45, 220, 220);
-  padding-block: 20px;
-  font-size: 40px;
-}
-
-.menu {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-}
-
-.btnMenu {
-  background-color: var(--color-btn);
-  color: white;
-  margin: 10px;
-  padding: 10px;
-  width: 150px;
-  height: 80px;
-  border-radius: 20px;
-  cursor: pointer;
-  border: none;
-}
-
-.btnMenu:hover {
-  background-color: white;
-  color: var(--color-btn);
-  border: 1px solid var(--color-btn);
-}
-
-.formConfig,
-.formTurno {
-  background-color: beige;
-  max-width: 600px;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  margin: auto;
-
-  border-radius: 20px;
-  & div {
-    padding: 5px;
-  }
-  & label {
-    padding-right: 20px;
-  }
-  & input {
-    width: 50px;
-  }
-  & button {
-    padding: 5px;
-    margin: 10px;
-  }
-
-  & h2 {
-    padding-block: 20px;
-  }
-}
-
-.btnForm {
-  padding: 10px 5px 10px 5px;
-  margin: 10px;
-  width: 90px !important;
-  border-radius: 10px;
-  border: 1px solid rgb(159, 158, 158);
-  color: white;
-  background-color: var(--color-btn);
-}
-
-.btnForm:hover {
-  background-color: rgb(255, 255, 255);
-  color: var(--color-btn);
-}
-
-.formTurno {
-  & label {
-    padding-right: 0px;
-    padding-left: 30px;
-  }
-  & input {
-    width: 230px;
-  }
-}
-
-#disponibilidad,
-#turnos {
+.h5-card-user {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   margin: auto;
-  background-color: beige;
-  max-width: 500px;
-  list-style: none;
-  border-radius: 20px;
-}
-
-.tabla-turnos {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  max-width: 500px;
-  justify-content: center;
-  margin: auto;
-}
-
-.row-dia {
-  background-color: aquamarine;
-  padding: 10px;
-  min-width: 500px;
-  display: block;
-  margin: 10px 0px 0px 0px;
-}
-
-.row-paciente {
-  background-color: beige;
-  padding: 5px 0px 5px 30px;
-  display: block;
+  margin-top: 50px;
 }
 
 .card-content {
@@ -283,5 +147,251 @@ h1 {
   justify-content: center;
 }
 
-.card-text {
+/* FIN Página Login
+
+/* INICIO  Páginas del sistema   */
+.sec-info-login {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding-inline: 20px;
+}
+
+#userImg {
+  max-width: 50px;
+}
+
+#userLog {
+  color: var(--color-white);
+  font-weight: 500;
+}
+
+h1 {
+  text-align: center;
+  color: rgb(45, 220, 220);
+  padding-block: 20px;
+  font-size: 40px;
+}
+
+.menu {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.btnMenu {
+  background-color: var(--color-btn);
+  color: var(--color-white);
+  margin: 10px;
+  padding: 10px;
+  width: 120px;
+  height: 60px;
+  border-radius: 20px;
+  cursor: pointer;
+  border: none;
+}
+
+.btnMenu:hover {
+  background-color: var(--color-white);
+  color: var(--color-btn);
+  border: 1px solid var(--color-btn);
+}
+
+.formConfig,
+.formTurno {
+  background-color: beige;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  border-radius: 20px;
+  & div {
+    padding: 5px;
+  }
+  & label {
+    padding-right: 20px;
+  }
+  & input {
+    width: 50px;
+  }
+  & button {
+    padding: 5px;
+    margin: 10px;
+  }
+
+  & h2 {
+    padding-block: 20px;
+  }
+}
+
+.btnForm {
+  padding: 10px 5px 10px 5px;
+  margin: 10px;
+  width: 90px !important;
+  border-radius: 10px;
+  border: 1px solid rgb(159, 158, 158);
+  color: var(--color-white);
+  background-color: var(--color-btn);
+}
+
+.btnForm:hover {
+  background-color: var(--color-white);
+  color: var(--color-btn);
+}
+
+.formTurno {
+  & div {
+    padding: 10px;
+  }
+  & label {
+    padding-right: 0px;
+    padding-left: 30px;
+  }
+  & input#lblDni {
+    width: 100px;
+  }
+  & input#lblPaciente {
+    width: 230px;
+  }
+}
+
+.sec-disponibilidad {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+  margin: auto;
+  background-color: beige;
+  max-width: 600px;
+  border-radius: 20px;
+  margin-top: 30px;
+  padding-block: 14px;
+  border: 5px double #a9a9a9;
+}
+
+#titulo-disp {
+  margin-bottom: 15px;
+}
+
+#disponibilidad {
+  background-color: beige;
+  max-width: 600px;
+  list-style: none;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+.tabla-turnos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* width: 700px; */
+  justify-content: center;
+  margin: auto;
+}
+
+.row-dia {
+  background-color: aquamarine;
+  padding: 10px;
+  width: 700px;
+  display: block;
+  margin: 10px 0px 0px 0px;
+}
+
+.row-paciente-hd {
+  display: flex;
+  align-items: center;
+  background-color: var(--color-paciente-hd);
+  width: 700px;
+  border-inline: 10px solid var(--color-white);
+  font-weight: 600;
+}
+
+.row-paciente-hd-1 {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background-color: var(--color-paciente-hd);
+  width: 700px;
+  border-inline: 10px solid var(--color-white);
+  font-weight: 600;
+}
+
+.row-paciente {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: beige;
+  padding-left: 30px;
+  width: 700px;
+  border-inline: 10px solid #fff;
+  border-block: 1px solid #fff;
+}
+
+.cel-paciente-dni {
+  padding-inline: 10px;
+  width: 100px;
+}
+
+.cel-paciente {
+  padding-inline: 10px;
+  width: 200px;
+}
+
+.btn-delete {
+  background-image: url("../img/delete.png");
+  background-size: cover;
+  background-position: center;
+  height: 30px;
+  width: 30px;
+  border: none;
+  background-color: beige;
+  cursor: pointer;
+}
+
+.card-disponibilidad-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: auto;
+}
+
+.card-disponibilidad {
+  padding-inline: 30px;
+}
+
+.card-disponibilidad-texto {
+  display: flex;
+  align-items: center;
+  margin: auto;
+  justify-content: center;
+}
+
+/* MODIFICACIONES ESTILO SWEETALERT */
+.swal2-confirm {
+  background: var(--color-btn) !important;
+  color: var(--color-white) !important;
+  border-radius: 8px !important;
+}
+
+.swal2-confirm:hover {
+  background: var(--color-white) !important;
+  color: var(--color-btn) !important;
+  border-radius: 8px !important;
+  border: 1px solid var(--color-btn) !important;
+}
+.swal2-cancel {
+  border-radius: 8px !important;
 }
